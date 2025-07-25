@@ -1,0 +1,3 @@
+- Printer -> logger
+- Split out TUI model stuff
+- Centralise bubbletea/lipgloss styles, colours etc.
