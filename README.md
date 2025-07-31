@@ -2,15 +2,45 @@
 
 A benchmarking TUI for measuring execution times and performance of shell commands.
 
-![Demo of usage](https://private-user-images.githubusercontent.com/20417521/472740641-05dd5cb1-904e-4474-af85-b9ae083bc203.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTM5MTYwMjAsIm5iZiI6MTc1MzkxNTcyMCwicGF0aCI6Ii8yMDQxNzUyMS80NzI3NDA2NDEtMDVkZDVjYjEtOTA0ZS00NDc0LWFmODUtYjlhZTA4M2JjMjAzLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA3MzAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNzMwVDIyNDg0MFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWMxMjNiNmYwNGU1ZDk2NDQxZjE3NjBiNzc0ZmI1NzQ3OTJhODNlODY3NDBhN2YxMzgzYjg3NmFhYmJiZWE4MzEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.gH4xejdKtKAW3n_xIWafEY4gdUPc1tGgjYKSK8Pecfw)
+![Demo of usage](https://github.com/user-attachments/assets/29d36268-f335-46df-9e7b-2afad5af5972)
 
-***
+```bash
+brew install jonlinkens/tap/chrono
+```
+
+---
 
 - Rich TUI experience and CLI for scripting usage
 - Configurable number of runs with statistical analysis (mean, min, max, range)
 - Optional warmup iterations before benchmarking
 - Live output stream of stdout and stderr with scrollback buffer
-- Phrase detection 
+- Shell startup calibration
+- Phrase detection
 - Timeout support
 - Cross platform
-  
+
+## Usage
+
+```bash
+# TUI mode (default)
+chrono echo "hello world"
+
+# Simple CLI mode
+chrono --cli echo "hello world"
+```
+
+### Options
+
+```bash
+chrono [OPTIONS] COMMAND [ARGS...]
+
+  --runs N               Number of benchmark runs (default: 1)
+  --warmups N            Number of warmup runs before benchmarking (default: 0)
+  --phrase "text"        Stop timing when this phrase appears in output
+  --timeout DURATION     Maximum time to wait (e.g., 5s, 1m30s)
+  --calibration N        Number of shell overhead calibration runs (default: 5)
+  --skip-calibration     Skip shell overhead calibration
+  --cli                  Use CLI output instead of TUI
+  --command "cmd args"   Command as quoted string (alternative to positional args)
+  --version              Print version and exit
+```
