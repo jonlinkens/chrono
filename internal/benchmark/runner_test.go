@@ -108,7 +108,7 @@ func TestPhraseInStderr(t *testing.T) {
 	config := Config{
 		Phrase:  "error",
 		Timeout: 5 * time.Second,
-		Command: []string{"sh", "-c", "echo 'error message' >&2"},
+		Command: []string{"bash", "-c", "echo 'error message' >&2"},
 	}
 
 	result := Run(config, 0)

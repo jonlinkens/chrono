@@ -14,6 +14,8 @@ import (
 	"chrono/internal/tui"
 )
 
+var version = "dev"
+
 func main() {
 	config := parseFlags()
 
@@ -106,6 +108,7 @@ func parseCommandString(cmd string) ([]string, error) {
 
 func parseFlags() benchmark.Config {
 	var (
+		versionFlag     = flag.Bool("version", false, "Print version and exit")
 		phrase          = flag.String("phrase", "", "Phrase to search for in command output (if not specified, measures until command completion)")
 		warmups         = flag.Int("warmups", 0, "Number of warmup runs before benchmarking")
 		runs            = flag.Int("runs", 1, "Number of benchmark runs")
@@ -116,6 +119,11 @@ func parseFlags() benchmark.Config {
 		commandStr      = flag.String("command", "", "Command to benchmark as a quoted string (alternative to positional arguments)")
 	)
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Printf("chrono %s\n", version)
+		os.Exit(0)
+	}
 
 	var command []string
 	if *commandStr != "" {
