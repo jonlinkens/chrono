@@ -5,19 +5,9 @@ import (
 	"time"
 
 	"chrono/internal/benchmark"
+	"chrono/internal/colours"
 	"chrono/internal/stats"
 	"github.com/charmbracelet/lipgloss"
-)
-
-var (
-	redStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("#f38ba8"))
-	greenStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("#a6e3a1"))
-	yellowStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#f9e2af"))
-	blueStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#89b4fa"))
-	purpleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#cba6f7"))
-	cyanStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#94e2d5"))
-	grayStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#6c7086"))
-	boldStyle   = lipgloss.NewStyle().Bold(true)
 )
 
 func FormatDuration(d time.Duration) string {
@@ -25,39 +15,39 @@ func FormatDuration(d time.Duration) string {
 }
 
 func PrintCalibration(runs int) {
-	fmt.Printf("%s\n", purpleStyle.Render(fmt.Sprintf("Running %d calibration runs to measure shell startup overhead...", runs)))
+	fmt.Printf("%s\n", colours.PurpleStyle.Render(fmt.Sprintf("Running %d calibration runs to measure shell startup overhead...", runs)))
 }
 
 func PrintShellOverhead(overhead time.Duration) {
 	fmt.Printf("%s %s\n\n",
-		purpleStyle.Render("Shell overhead:"),
-		boldStyle.Render(FormatDuration(overhead)))
+		colours.PurpleStyle.Render("Shell overhead:"),
+		colours.BoldStyle.Render(FormatDuration(overhead)))
 }
 
 func PrintWarmupHeader(warmups int) {
-	fmt.Printf("%s\n", yellowStyle.Render(fmt.Sprintf("Running %d warmup runs...", warmups)))
+	fmt.Printf("%s\n", colours.YellowStyle.Render(fmt.Sprintf("Running %d warmup runs...", warmups)))
 }
 
 func PrintWarmupResult(run int, result benchmark.Result) {
 	if !result.Found {
-		fmt.Printf("%s\n", grayStyle.Render(fmt.Sprintf("Warmup %d: phrase not found within timeout", run)))
+		fmt.Printf("%s\n", colours.GrayStyle.Render(fmt.Sprintf("Warmup %d: phrase not found within timeout", run)))
 	} else {
-		fmt.Printf("%s\n", grayStyle.Render(fmt.Sprintf("Warmup %d: %s", run, FormatDuration(result.Duration))))
+		fmt.Printf("%s\n", colours.GrayStyle.Render(fmt.Sprintf("Warmup %d: %s", run, FormatDuration(result.Duration))))
 	}
 }
 
 func PrintBenchmarkHeader(runs int) {
-	fmt.Printf("%s\n", blueStyle.Render(fmt.Sprintf("Running %d benchmark runs...", runs)))
+	fmt.Printf("%s\n", colours.BlueStyle.Render(fmt.Sprintf("Running %d benchmark runs...", runs)))
 }
 
 func PrintBenchmarkResult(run int, result benchmark.Result) {
-	headerStyle := boldStyle.Foreground(lipgloss.Color("#94e2d5"))
+	headerStyle := colours.BoldStyle.Foreground(lipgloss.Color(colours.Cyan))
 	fmt.Printf("\n%s\n", headerStyle.Render(fmt.Sprintf("--- Benchmark Run %d ---", run)))
 
 	if !result.Found {
-		fmt.Printf("%s\n", redStyle.Render(fmt.Sprintf("Run %d: phrase not found within timeout", run)))
+		fmt.Printf("%s\n", colours.RedStyle.Render(fmt.Sprintf("Run %d: phrase not found within timeout", run)))
 	} else {
-		fmt.Printf("%s\n", greenStyle.Render(fmt.Sprintf("Run %d: %s", run, boldStyle.Render(FormatDuration(result.Duration)))))
+		fmt.Printf("%s\n", colours.GreenStyle.Render(fmt.Sprintf("Run %d: %s", run, colours.BoldStyle.Render(FormatDuration(result.Duration)))))
 	}
 }
 func PrintSummary(results []benchmark.Result, config benchmark.Config, shellOverhead time.Duration) {
@@ -86,41 +76,41 @@ func PrintSummary(results []benchmark.Result, config benchmark.Config, shellOver
 
 	if config.Phrase == "" {
 		fmt.Printf("%s%s\n",
-			cyanStyle.Render("Mode:"),
+			colours.CyanStyle.Render("Mode:"),
 			fmt.Sprintf(" Command completion timing%s%s", warmupInfo, calibrationInfo))
 	} else {
 		fmt.Printf("%s%s\n",
-			cyanStyle.Render("Phrase:"),
-			fmt.Sprintf(" \"%s\"%s%s", boldStyle.Render(config.Phrase), warmupInfo, calibrationInfo))
+			colours.CyanStyle.Render("Phrase:"),
+			fmt.Sprintf(" \"%s\"%s%s", colours.BoldStyle.Render(config.Phrase), warmupInfo, calibrationInfo))
 	}
 
 	if len(validResults) == 0 {
 		if config.Phrase == "" {
-			fmt.Printf("%s\n", redStyle.Render("No successful runs - all commands timed out"))
+			fmt.Printf("%s\n", colours.RedStyle.Render("No successful runs - all commands timed out"))
 		} else {
-			fmt.Printf("%s\n", redStyle.Render("No successful runs - phrase was not found in any execution"))
+			fmt.Printf("%s\n", colours.RedStyle.Render("No successful runs - phrase was not found in any execution"))
 		}
 		return
 	}
 
 	if failedCount > 0 {
-		fmt.Printf("%s  ", redStyle.Render(fmt.Sprintf("Failed: %d/%d", failedCount, len(results))))
+		fmt.Printf("%s  ", colours.RedStyle.Render(fmt.Sprintf("Failed: %d/%d", failedCount, len(results))))
 	}
 
 	if len(validResults) == 1 {
 		fmt.Printf("%s %s\n",
-			cyanStyle.Render("Time:"),
-			boldStyle.Render(FormatDuration(validResults[0])))
+			colours.CyanStyle.Render("Time:"),
+			colours.BoldStyle.Render(FormatDuration(validResults[0])))
 		return
 	}
 
 	stats := stats.CalculateStatistics(validResults)
 	if failedCount == 0 {
-		fmt.Printf("%s  ", greenStyle.Render(fmt.Sprintf("Runs: %d", len(validResults))))
+		fmt.Printf("%s  ", colours.GreenStyle.Render(fmt.Sprintf("Runs: %d", len(validResults))))
 	}
 	fmt.Printf("%s %s  %s %s  %s %s  %s %s\n",
-		cyanStyle.Render("Mean:"), boldStyle.Render(FormatDuration(stats.Mean)),
-		greenStyle.Render("Min:"), FormatDuration(stats.Min),
-		redStyle.Render("Max:"), FormatDuration(stats.Max),
-		yellowStyle.Render("Range:"), FormatDuration(stats.Range))
+		colours.CyanStyle.Render("Mean:"), colours.BoldStyle.Render(FormatDuration(stats.Mean)),
+		colours.GreenStyle.Render("Min:"), FormatDuration(stats.Min),
+		colours.RedStyle.Render("Max:"), FormatDuration(stats.Max),
+		colours.YellowStyle.Render("Range:"), FormatDuration(stats.Range))
 }
