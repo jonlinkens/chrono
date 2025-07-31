@@ -61,8 +61,8 @@ jobs:
           DEFAULT_BUMP: patch
 
   release:
-    if: startsWith(github.ref, 'refs/tags/')
-    needs: test
+    if: github.ref == 'refs/heads/main'
+    needs: tag
     runs-on: ubuntu-latest
 
     steps:
